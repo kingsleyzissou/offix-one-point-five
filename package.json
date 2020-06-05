@@ -1,20 +1,38 @@
 {
-  "name": "todo-off",
+  "name": "urql-offix",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "@urql/devtools": "^2.0.2",
+    "@urql/exchange-persisted-fetch": "^0.1.3",
+    "antd": "^4.2.5",
+    "apollo-client": "^2.6.10",
+    "apollo-link-http": "^1.5.17",
+    "graphql": "^15.0.0",
+    "graphql-serve": "^0.12.0",
+    "graphql.macro": "^1.4.2",
+    "offix-scheduler": "^0.15.1",
     "react": "^16.13.1",
+    "react-apollo": "^3.1.5",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "simpl-schema": "^1.7.3",
+    "subscriptions-transport-ws": "^0.9.16",
+    "uniforms": "3.0.0-alpha.3",
+    "uniforms-antd": "3.0.0-alpha.3",
+    "uniforms-bridge-graphql": "3.0.0-alpha.3",
+    "urql": "^1.9.7",
+    "wonka": "^4.0.13"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "serve": "gqls serve src/model --port=5000"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -4,10 +4,12 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import { URQLProvider } from './config/client.urql';
+
 ReactDOM.render(
-  <React.StrictMode>
+  <URQLProvider>
     <App />
-  </React.StrictMode>,
+  </URQLProvider>,
   document.getElementById('root')
 );
 
