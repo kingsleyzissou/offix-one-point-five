@@ -24,7 +24,7 @@
     "uniforms": "3.0.0-alpha.3",
     "uniforms-antd": "3.0.0-alpha.3",
     "uniforms-bridge-graphql": "3.0.0-alpha.3",
-    "urql": "^1.9.7",
+    "urql": "1.9.8,
     "wonka": "^4.0.13"
   },
   "scripts": {
