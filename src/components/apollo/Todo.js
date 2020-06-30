@@ -13,16 +13,19 @@ export function Todo() {
 
   const offix = useContext(OfflineContext);
 
-  // useSubscription({ query: NEW_TODO }, console.log);
-  // const [,createTodo] = useMutation(CREATE_TODO);
-  const {data, error, loading} = useQuery(FIND_TODOS);
+  const { data, error, loading } = useQuery(FIND_TODOS, {
+    fetchPolicy: 'no-cache'
+  });
 
   const handleSubmit = async (model) => {
     try {
-      await offix.execute({ query: CREATE_TODO, variables: model });
+      await offix.execute({
+        query: CREATE_TODO,
+        variables: model,
+        refetchQuery: FIND_TODOS
+      });
       model.title = '';
-    } catch(err) {
-      // console.log(err)
+    } catch (err) {
       if (err.offline) {
         const result = await err.watchOfflineChange();
         console.log(result);
@@ -32,8 +35,6 @@ export function Todo() {
 
   if (loading) return <Loading />;
   if (error) return <Error message={error.message} />;
-
-  console.log(data);
 
   return (
     <div style={{ width: '40%' }}>
@@ -45,8 +46,8 @@ export function Todo() {
         <HiddenField name="version" value={1} />
         <SubmitField style={{ float: 'right' }}>Add</SubmitField>
       </AutoForm>
-      <br/>
-      <br/>
+      <br />
+      <br />
       <TodoList todos={data.findAllTodos} />
     </div>
   );
