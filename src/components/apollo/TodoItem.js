@@ -15,7 +15,7 @@ export function TodoItem({ todo }) {
       await offix.execute({
         query: UPDATE_TODO,
         variables: { ...todo, completed: !todo.completed },
-        refetchQuery: FIND_TODOS
+        refetchQueries: [{ query: FIND_TODOS }]
       });
     } catch (err) {
       if (err.offline) {
@@ -30,7 +30,7 @@ export function TodoItem({ todo }) {
       await offix.execute({
         query: DELETE_TODO,
         variables: { id: todo.id },
-        refetchQuery: FIND_TODOS
+        refetchQueries: [{ query: FIND_TODOS }]
       });
     } catch (err) {
       if (err.offline) {

@@ -22,7 +22,7 @@ export function Todo() {
       await offix.execute({
         query: CREATE_TODO,
         variables: model,
-        refetchQuery: FIND_TODOS
+        refetchQueries: [{ query: FIND_TODOS }]
       });
       model.title = '';
     } catch (err) {
