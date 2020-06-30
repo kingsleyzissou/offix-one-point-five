@@ -13,8 +13,6 @@ export function Todo() {
 
   const offix = useContext(OfflineContext);
 
-  // useSubscription({ query: NEW_TODO }, console.log);
-  // const [,createTodo] = useMutation(CREATE_TODO);
   const [{ data, fetching, error }] = useQuery({
     query: FIND_TODOS,
   });
