@@ -4,11 +4,14 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+import { ApolloClientProvider } from './config/client.apollo';
 import { URQLProvider } from './config/client.urql';
 
 ReactDOM.render(
   <URQLProvider>
-    <App />
+      <ApolloClientProvider>
+          <App />
+      </ApolloClientProvider>
   </URQLProvider>,
   document.getElementById('root')
 );

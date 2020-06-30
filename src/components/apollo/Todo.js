@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { AutoForm, TextField, SubmitField, ErrorsField, HiddenField } from 'uniforms-antd';
-import { useQuery } from 'urql';
+import { useQuery } from '@apollo/client';
 
-import { OfflineContext } from '../../config/client.urql';
+import { OfflineContext } from '../../config/client.apollo';
 import { schema } from '../../schema';
 import { FIND_TODOS, CREATE_TODO } from '../../gql/queries';
 import { TodoList } from './TodoList';
@@ -15,9 +15,7 @@ export function Todo() {
 
   // useSubscription({ query: NEW_TODO }, console.log);
   // const [,createTodo] = useMutation(CREATE_TODO);
-  const [{ data, fetching, error }] = useQuery({
-    query: FIND_TODOS,
-  });
+  const {data, error, loading} = useQuery(FIND_TODOS);
 
   const handleSubmit = async (model) => {
     try {
@@ -32,7 +30,7 @@ export function Todo() {
     }
   };
 
-  if (fetching) return <Loading />;
+  if (loading) return <Loading />;
   if (error) return <Error message={error.message} />;
 
   console.log(data);
