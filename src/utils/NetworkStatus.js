@@ -1,4 +1,5 @@
 import { Observable, fromEvent, merge } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export class NetworkStatus {
 
@@ -7,16 +8,11 @@ export class NetworkStatus {
 
   constructor() {
     this.subscriber = merge(
-      new Observable((o) => {
-        const state = (window.navigator.onLine) ? 'online' : 'offline';
-        o.next({ type: state });
-      }),
-      fromEvent(window, 'online'),
-      fromEvent(window, 'offline')
+      new Observable((o) => o.next(window.navigator.onLine)),
+      fromEvent(window, 'online').pipe(map(x => (x.type === 'online'))),
+      fromEvent(window, 'offline').pipe(map(x => (x.type === 'online')))
     );
-    this.subscribe(x => {
-      this.isOnline = (x.type === 'online');
-    });
+    this.subscribe(x => this.isOnline = x);
   }
 
   subscribe(observer) {
