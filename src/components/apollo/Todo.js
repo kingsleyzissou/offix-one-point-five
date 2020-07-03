@@ -13,6 +13,7 @@ import { createTodoUpdateQuery } from '../../utils/mutationOptions';
 
 export function Todo() {
 
+  const form = React.useRef();
   const { scheduler } = useContext(OfflineContext);
   const { data, error, loading } = useQuery(FIND_TODOS);
 
@@ -24,7 +25,7 @@ export function Todo() {
       optimisticResponse: getOptimisticResponse(model, CREATE_TODO),
       update: createTodoUpdateQuery
     }).subscribe(
-      (res) => model.title = '',
+      () => form.current.reset( ),
       (err) => console.log(err)
     );
   };
@@ -35,7 +36,12 @@ export function Todo() {
   return (
     <div style={{ width: '40%' }}>
       <h1>Todo List</h1>
-      <AutoForm schema={schema} onSubmit={handleSubmit} style={{ marginBottom: '2em' }}>
+      <AutoForm 
+        schema={schema} 
+        onSubmit={handleSubmit} 
+        style={{ marginBottom: '2em' }}
+        ref={form}
+      >
         <ErrorsField />
         <TextField name="title" />
         <HiddenField name="completed" value={false} />
