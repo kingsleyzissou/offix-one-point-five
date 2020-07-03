@@ -11,26 +11,24 @@ import { Error } from '../Error';
 
 export function Todo() {
 
-  const offix = useContext(OfflineContext);
+  const { scheduler } = useContext(OfflineContext);
 
   const { data, error, loading } = useQuery(FIND_TODOS, {
     fetchPolicy: 'no-cache'
   });
 
-  const handleSubmit = async (model) => {
-    try {
-      await offix.execute({
-        query: CREATE_TODO,
-        variables: model,
-        refetchQueries: [{ query: FIND_TODOS }]
-      });
-      model.title = '';
-    } catch (err) {
-      if (err.offline) {
-        const result = await err.watchOfflineChange();
-        console.log(result);
-      }
-    }
+  const handleSubmit = (model) => {
+    scheduler.execute({
+      query: CREATE_TODO,
+      variables: model,
+      refetchQueries: [{ query: FIND_TODOS }]
+    }).subscribe(
+      (res) => {
+        console.log(res);
+        model.title = ''
+      },
+      (err) => console.log(err)
+    );
   };
 
   if (loading) return <Loading />;

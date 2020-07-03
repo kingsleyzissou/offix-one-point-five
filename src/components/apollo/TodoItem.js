@@ -8,36 +8,28 @@ import { OfflineContext } from "../../config/client.apollo";
 
 export function TodoItem({ todo }) {
 
-  const offix = useContext(OfflineContext);
+  const { scheduler } = useContext(OfflineContext);
 
-  const handleToggle = async () => {
-    try {
-      await offix.execute({
-        query: UPDATE_TODO,
-        variables: { ...todo, completed: !todo.completed },
-        refetchQueries: [{ query: FIND_TODOS }]
-      });
-    } catch (err) {
-      if (err.offline) {
-        const result = await err.watchOfflineChange();
-        console.log(result);
-      }
-    }
+  const handleToggle = () => {
+    scheduler.execute({
+      query: UPDATE_TODO,
+      variables: { ...todo, completed: !todo.completed },
+      refetchQueries: [{ query: FIND_TODOS }]
+    }).subscribe(
+      (res) => console.log(res),
+      (err) => console.log(err)
+    );
   };
 
-  const handleDelete = async () => {
-    try {
-      await offix.execute({
-        query: DELETE_TODO,
-        variables: { id: todo.id },
-        refetchQueries: [{ query: FIND_TODOS }]
-      });
-    } catch (err) {
-      if (err.offline) {
-        const result = await err.watchOfflineChange();
-        console.log(result);
-      }
-    }
+  const handleDelete =  () => {
+    scheduler.execute({
+      query: DELETE_TODO,
+      variables: { id: todo.id },
+      refetchQueries: [{ query: FIND_TODOS }]
+    }).subscribe(
+      (res) => console.log(res),
+      (err) => console.log(err)
+    );
   };
 
   return (
