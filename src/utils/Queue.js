@@ -45,7 +45,8 @@ export class Queue {
    * @param key 
    */
   forwardOperation(entry, key) {
-    this.subject.next({ action: 'requeued', payload: { entry, key }});
+    const { optimisticResponse, ...options } = entry;
+    this.subject.next({ action: 'requeued', payload: { entry: options, key }});
   }
 
   /**
