@@ -17,12 +17,12 @@ export class Queue {
   /**
    * Add an entry to the queue
    * 
-   * @param key 
    * @param value 
    */
-  enqueue(key, value) {
+  enqueue(value) {
+    const key = this.ID();
     this.store.add(key, value);
-    this.subject.next({ action: 'queued', payload: value });
+    this.subject.next({ action: 'queued', payload: { key, value } });
   }
 
   /**
@@ -45,7 +45,7 @@ export class Queue {
    * @param key 
    */
   forwardOperation(entry, key) {
-    this.subject.next({ type: 'requeued', payload: { entry, key }});
+    this.subject.next({ action: 'requeued', payload: { entry, key }});
   }
 
   /**
@@ -53,10 +53,10 @@ export class Queue {
    * 
    * @param key 
    */
-  dequeue(key) {
-    const op = this.store.get(key);
+  dequeue(key, result) {
+    const operation = this.store.get(key);
     this.store.remove(key);
-    this.subject.next({ action: 'dequeued', payload: op });
+    this.subject.next({ action: 'dequeued', payload: { key, operation, result } });
     if (this.store.store.size === 0) this.cleared();
   }
 
@@ -67,9 +67,9 @@ export class Queue {
    * @param err 
    */
   failure(err) {
-    console.log(err);
     // TODO implement failure method
     // or possibly add this to the scheduler
+    console.log(err);
   }
 
   /**
@@ -92,10 +92,10 @@ export class Queue {
    * Filter events for queued events
    * 
    */
-  queued() {
+  queued(observer) {
     this.subject.pipe(
-      filter(res => res.type === 'queued')
-    ).subscribe(console.log);
+      filter(res => res.action === 'queued')
+    ).subscribe(observer);
   }
 
   /**
@@ -105,8 +105,21 @@ export class Queue {
    */
   onRequeue(observer) {
     this.subject.pipe(
-      filter(res => res.type === 'requeued')
+      filter(res => res.action === 'requeued')
     ).subscribe(observer);
   }
+
+  onDequeued(observer) {
+    this.subject.pipe(
+      filter(res => res.action === 'dequeued')
+    ).subscribe(observer);
+  }
+
+  ID() {
+    // Math.random should be unique because of its seeding algorithm.
+    // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+    // after the decimal.
+    return "queue:" + Math.random().toString(36).substr(2, 9);
+  };
 
 }
