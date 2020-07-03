@@ -1,8 +1,16 @@
 import React from "react";
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache, split } from '@apollo/client';
-import { OffixScheduler } from "offix-scheduler";
+import { 
+  ApolloClient, 
+  ApolloProvider, 
+  HttpLink, 
+  InMemoryCache, 
+  split, 
+} from '@apollo/client';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/link-ws';
-import { getMainDefinition } from "apollo-utilities";
+
+import { Scheduler } from '../utils/Scheduler';
+
 
 const wsLink = new WebSocketLink({
   uri: `ws://localhost:5000/graphql`,
@@ -29,51 +37,34 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-class ApolloOffline {
 
-  client;
 
-  constructor(client) {
-    this.client = client;
-  }
+const observer = {
+  next(x) { 
+    console.log('got value ' +  x); 
+    console.log(JSON.stringify(x));
+    console.log(x.type);
+  },
+  error(err) { console.error('something wrong occurred: ' + err); },
+  complete() { console.log('done'); }
+};
 
-  async execute(options) {
-    const { query, variables } = options;
-    return this.client.mutate({
-      mutation: query,
-      variables,
-      ...options
-    });
-  }
 
-}
+const scheduler = new Scheduler(apolloClient);
 
-const scheduler = new OffixScheduler({
-  executor: new ApolloOffline(apolloClient)
-});
+// subscribe to offline queue events
+scheduler.offlineQueue.subscribe();
+
+// for debugging purposes
+window.scheduler = scheduler;
 
 export const OfflineContext = React.createContext(null);
-
-function Hydrated({ children }) {
-  const [hydrated, setHydrated] = React.useState(false);
-
-  React.useEffect(() => {
-    scheduler.init().then(() => setHydrated(true))
-  })
-
-  if (hydrated) return children;
-
-  return null;
-
-}
 
 export function ApolloClientProvider({ children }) {
   return (
     <ApolloProvider client={apolloClient} >
-      <OfflineContext.Provider value={scheduler}>
-        <Hydrated>
-          {children}
-        </Hydrated>
+      <OfflineContext.Provider value={{ scheduler, observer }}>
+        {children}
       </OfflineContext.Provider>
     </ApolloProvider>
   );
