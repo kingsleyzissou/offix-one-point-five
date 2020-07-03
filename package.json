@@ -13,7 +13,7 @@
     "@wora/cache-persist": "^2.1.0",
     "antd": "^4.2.5",
     "graphql": "^15.0.0",
-    "graphql-serve": "0.14.0-beta",
+    "graphql-serve": "0.14.0-beta1",
     "graphql.macro": "^1.4.2",
     "offix-scheduler": "^0.15.1",
     "react": "^16.13.1",
