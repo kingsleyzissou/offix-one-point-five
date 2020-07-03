@@ -21,7 +21,6 @@ export function Todo() {
     scheduler.execute({
       query: CREATE_TODO,
       variables: model,
-      updateQueries: [{ query: FIND_TODOS }],
       optimisticResponse: getOptimisticResponse(model, CREATE_TODO),
       update: createTodoUpdateQuery
     }).subscribe(
