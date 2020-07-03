@@ -5,14 +5,14 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import { ApolloClientProvider } from './config/client.apollo';
-import { URQLProvider } from './config/client.urql';
+// import { URQLProvider } from './config/client.urql';
 
 ReactDOM.render(
-  <URQLProvider>
+  // <URQLProvider>
       <ApolloClientProvider>
           <App />
-      </ApolloClientProvider>
-  </URQLProvider>,
+      </ApolloClientProvider>,
+  // </URQLProvider>,
   document.getElementById('root')
 );
 
