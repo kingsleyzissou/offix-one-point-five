@@ -14,7 +14,7 @@ export class Store {
   }
 
   remove(key) {
-    this.store.remove(key);
+    this.store.delete(key);
   }
 
   getOfflineData() {
