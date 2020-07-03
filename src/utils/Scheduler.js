@@ -66,17 +66,14 @@ export class Scheduler {
    */
   reexecute({ payload }) {
     const { entry, key } = payload;
-    // remove optimistic response before
-    // reexecute since optimistic response
-    // has already been applied
-    const { optimisticResponse, ...opts } = entry;
-    const options = { ...opts, retry: entry.retry + 1 };
+    const options = { ...entry, retry: entry.retry + 1 };
     this.execute(options).subscribe(
       (result) => {
-        // console.log(this.cache);
         this.offlineQueue.dequeue(key, result);
-        // const data = this.cache.readQuery({ query: FIND_TODOS });
-        // console.log(data);
+        // remove the optimistic layer on successful
+        // reexecution
+        this.cache.removeOptimistic(key);
+        // TODO replace client id in queue
       }, 
       this.offlineQueue.failure
     );
@@ -97,7 +94,6 @@ export class Scheduler {
   }
 
   addOR({ payload }) {
-    console.log(payload);
     const { query, variables } = payload.value;
     this.mutationStore.initMutation(
       payload.key,
@@ -125,9 +121,7 @@ export class Scheduler {
   }
 
   dequeueObserver({ payload }) {
-    console.log(payload);
-    const mut = this.mutationStore.get(payload.key);
-    console.log(mut);
+    // TODO replace client generated id's
   }
 
   retryGate(count) {
