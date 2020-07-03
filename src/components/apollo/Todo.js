@@ -9,11 +9,11 @@ import { TodoList } from './TodoList';
 import { Loading } from '../Loading';
 import { Error } from '../Error';
 import { getOptimisticResponse } from '../../utils/CreateOptimisticResponse';
+import { createTodoUpdateQuery } from '../../utils/mutationOptions';
 
 export function Todo() {
 
   const { scheduler } = useContext(OfflineContext);
-
   const { data, error, loading } = useQuery(FIND_TODOS);
 
   const handleSubmit = (model) => {
@@ -22,26 +22,9 @@ export function Todo() {
       variables: model,
       updateQueries: [{ query: FIND_TODOS }],
       optimisticResponse: getOptimisticResponse(model, CREATE_TODO),
-      update: (proxy, { data: { createTodo }}) => {
-        const data = proxy.readQuery({ query: FIND_TODOS });
-        proxy.writeQuery({ 
-          query: FIND_TODOS,
-          data: {
-            findTodos: {
-              ...data.findTodos,
-              items: [
-                ...data.findTodos.items,
-                createTodo
-              ]
-            },
-          }
-        })
-      }
+      update: createTodoUpdateQuery
     }).subscribe(
-      (res) => {
-        console.log(res);
-        model.title = ''
-      },
+      (res) => model.title = '',
       (err) => console.log(err)
     );
   };
