@@ -37,19 +37,6 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-
-
-const observer = {
-  next(x) { 
-    console.log('got value ' +  x); 
-    console.log(JSON.stringify(x));
-    console.log(x.type);
-  },
-  error(err) { console.error('something wrong occurred: ' + err); },
-  complete() { console.log('done'); }
-};
-
-
 const scheduler = new Scheduler(apolloClient);
 
 // subscribe to offline queue events
@@ -63,7 +50,7 @@ export const OfflineContext = React.createContext(null);
 export function ApolloClientProvider({ children }) {
   return (
     <ApolloProvider client={apolloClient} >
-      <OfflineContext.Provider value={{ scheduler, observer }}>
+      <OfflineContext.Provider value={{ scheduler }}>
         {children}
       </OfflineContext.Provider>
     </ApolloProvider>

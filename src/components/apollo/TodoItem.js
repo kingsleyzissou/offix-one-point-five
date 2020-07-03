@@ -8,6 +8,11 @@ import { OfflineContext } from "../../config/client.apollo";
 import { getOptimisticResponse } from '../../utils/CreateOptimisticResponse';
 import { updateTodoUpdateQuery, deleteTodoUpdateQuery } from '../../utils/mutationOptions';
 
+const observer = {
+  next: (res) => console.log(res),
+  error: (err) => console.error(err),
+  complete: () => console.log('done'),
+};
 
 export function TodoItem({ todo }) {
 
@@ -20,10 +25,7 @@ export function TodoItem({ todo }) {
       variables,
       optimisticResponse: getOptimisticResponse(variables, UPDATE_TODO),
       update: updateTodoUpdateQuery,
-    }).subscribe(
-      (res) => console.log('update sub', res),
-      (err) => console.log('update error', err)
-    );
+    }).subscribe(observer);
   };
 
   const handleDelete =  () => {
@@ -33,10 +35,7 @@ export function TodoItem({ todo }) {
       variables,
       optimisticResponse: getOptimisticResponse(variables, DELETE_TODO),
       update: deleteTodoUpdateQuery,
-    }).subscribe(
-      (res) => console.log('delete sub', res),
-      (err) => console.log('delete', err)
-    );
+    }).subscribe(observer);
   };
 
   return (
