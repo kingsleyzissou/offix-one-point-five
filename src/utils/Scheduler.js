@@ -13,7 +13,7 @@ export class Scheduler {
     this.offlineQueue = new Queue();
     this.networkStatus = new NetworkStatus();
     this.networkStatus.subscribe(this.initOnlineState.bind(this));
-    this.offlineQueue.onRequeue(this.reExecute.bind(this));
+    this.offlineQueue.onRequeue(this.reexecute.bind(this));
   }
 
   /**
