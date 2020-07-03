@@ -5,7 +5,7 @@ import { Card, Button } from 'antd';
 import { schema } from '../../schema';
 import { UPDATE_TODO, DELETE_TODO, FIND_TODOS } from '../../gql/queries';
 import { OfflineContext } from "../../config/client.apollo";
-import { createOptimisticResponse } from '../../utils/CreateOptimisticResponse';
+import { getOptimisticResponse } from '../../utils/CreateOptimisticResponse';
 
 
 export function TodoItem({ todo }) {
@@ -14,51 +14,38 @@ export function TodoItem({ todo }) {
 
   const handleToggle = () => {
     const variables = { ...todo, completed: !todo.completed };
-    const optimisticResponse = createOptimisticResponse({
+    scheduler.execute({
+      query: UPDATE_TODO,
       variables,
-      returnType: 'Todo',
-      mutation: UPDATE_TODO
-    });
-    try {
-      scheduler.execute({
-        query: UPDATE_TODO,
-        variables,
-        optimisticResponse,
-        update: (proxy, { data: { updateTodo }}) => {
-          const data = proxy.readQuery({ query: FIND_TODOS });
-          const items = data.findTodos.items.map(item => {
-            if (item.id === updateTodo.id) return updateTodo;
-            return item;
-          });
-          proxy.writeQuery({ 
-            query: FIND_TODOS,
-            data: {
-              findTodos: {
-                ...data.findTodos,
-                items,
-              },
-            }
-          })
-        }
-      }).subscribe(
-        (res) => console.log('update sub', res),
-        (err) => console.log('update error', err)
-      );
-    } catch(err) {
-      console.log(err);
-    }
+      optimisticResponse: getOptimisticResponse(variables, UPDATE_TODO),
+      update: (proxy, { data: { updateTodo }}) => {
+        const data = proxy.readQuery({ query: FIND_TODOS });
+        const items = data.findTodos.items.map(item => {
+          if (item.id === updateTodo.id) return updateTodo;
+          return item;
+        });
+        proxy.writeQuery({ 
+          query: FIND_TODOS,
+          data: {
+            findTodos: {
+              ...data.findTodos,
+              items,
+            },
+          }
+        })
+      }
+    }).subscribe(
+      (res) => console.log('update sub', res),
+      (err) => console.log('update error', err)
+    );
   };
 
   const handleDelete =  () => {
-    const optimisticResponse = createOptimisticResponse({
-      variables: { id: todo.id },
-      returnType: 'Todo',
-      mutation: DELETE_TODO
-    });
+    const variables = { id: todo.id };
     scheduler.execute({
       query: DELETE_TODO,
-      variables: { id: todo.id },
-      optimisticResponse,
+      variables,
+      optimisticResponse: getOptimisticResponse(variables, DELETE_TODO),
       update: (proxy, { data: { deleteTodo }}) => {
         const data = proxy.readQuery({ query: FIND_TODOS });
         const items = data.findTodos.items.filter(item => item.id !== deleteTodo.id);

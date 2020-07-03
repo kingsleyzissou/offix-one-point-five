@@ -8,7 +8,7 @@ import { FIND_TODOS, CREATE_TODO } from '../../gql/queries';
 import { TodoList } from './TodoList';
 import { Loading } from '../Loading';
 import { Error } from '../Error';
-import { createOptimisticResponse } from '../../utils/CreateOptimisticResponse';
+import { getOptimisticResponse } from '../../utils/CreateOptimisticResponse';
 
 export function Todo() {
 
@@ -17,16 +17,11 @@ export function Todo() {
   const { data, error, loading } = useQuery(FIND_TODOS);
 
   const handleSubmit = (model) => {
-    const optimisticResponse = createOptimisticResponse({
-      variables: model,
-      returnType: 'Todo',
-      mutation: CREATE_TODO
-    });
     scheduler.execute({
       query: CREATE_TODO,
       variables: model,
       updateQueries: [{ query: FIND_TODOS }],
-      optimisticResponse,
+      optimisticResponse: getOptimisticResponse(model, CREATE_TODO),
       update: (proxy, { data: { createTodo }}) => {
         const data = proxy.readQuery({ query: FIND_TODOS });
         proxy.writeQuery({ 
