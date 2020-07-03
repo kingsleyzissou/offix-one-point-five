@@ -22,7 +22,7 @@ export function createOptimisticResponse(options) {
     [operation]: {
       __typename: returnType,
       ...variables,
-      [idField]: variables.id ? variables.id : generateClientId(),
+      [idField]: (variables.id) ? variables.id : generateClientId(),
       optimisticResponse: true
     }
   }
