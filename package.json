@@ -23,6 +23,7 @@
     "rxjs": "^6.5.5",
     "simpl-schema": "^1.7.3",
     "subscriptions-transport-ws": "^0.9.16",
+    "traverse": "^0.6.6",
     "uniforms": "3.0.0-alpha.4",
     "uniforms-antd": "3.0.0-alpha.4",
     "uniforms-bridge-graphql": "3.0.0-alpha.4",
