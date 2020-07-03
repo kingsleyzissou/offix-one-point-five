@@ -41,12 +41,11 @@ export function Todo() {
         <ErrorsField />
         <TextField name="title" />
         <HiddenField name="completed" value={false} />
-        <HiddenField name="version" value={1} />
         <SubmitField style={{ float: 'right' }}>Add</SubmitField>
       </AutoForm>
       <br />
       <br />
-      <TodoList todos={data.findAllTodos} />
+      <TodoList todos={data.findTodos.items} />
     </div>
   );
 };

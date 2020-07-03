@@ -2,10 +2,12 @@ import gql from 'graphql-tag';
 
 export const FIND_TODOS = gql`
   query {
-    findAllTodos {
-      id
-      title
-      completed
+    findTodos {
+      items {
+        id
+        title
+        completed
+      }
     }
   }
 `;
